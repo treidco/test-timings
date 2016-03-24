@@ -10,3 +10,4 @@
 (deftest test-config-token
   (testing "Reading token from config."
     (is (= "71ee02dfca317e558d9b52772d3fdd82842392f2" (:access_token config)))))
+

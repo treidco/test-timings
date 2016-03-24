@@ -3,25 +3,39 @@
   (:require [clj-http.client :as http])
   (:require [clojure.data.json :as json])
   (:require [clojure.edn :as edn]))
+;(use 'test-timings.core :reload-all)
 
 (def config
   (edn/read-string (slurp "resources/config.edn")))
 
-(defn build-url
+(defn base-url
   [service]
   (str (:base_url config) "/" service))
 
-(defn channel-url [] (build-url "Channel"))
-(defn campaign-url [] (build-url "Campaign"))
+(defn build-url
+  ([service] (base-url service))
+  ([service id] (str (base-url service) "(" id ")"))
+  ([service id property] (str (build-url service id) "/" property)))
 
-(defn call-service
+(defn channel-url [& args] (apply build-url "Channel" args))
+(defn campaign-url [& args] (apply build-url "Campaign" args))
+
+(defn execute-service
   [url]
   (http/get url
             {:headers {:authorization (str "Bearer " (:access_token config))}}))
 
 (defn call-channel
-  ([] (call-service channel-url))
-  ([channel-id] (call-service (str channel-url "(" channel-id ")"))))
+  ([] (call-service (channel-url) ))
+  ([channel-id] (call-service (str (channel-url) "(" channel-id ")"))))
+
+(defn call-service
+  ([url] (execute-service url))
+  ([url id] (execute-service (str url "(" id ")"))))
+
+(defn call-campaign
+  ([] (call-service (campaign-url)))
+  ([campaign-id]))
 
 (defn parse-json
   [response key]
