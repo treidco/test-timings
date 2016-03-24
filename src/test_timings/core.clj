@@ -29,11 +29,11 @@
 
 (defn is_enabled [channel_id] (parse-json (:body (call-channel channel_id)) "enabled"))
 
-(defn get-timing-map []
-  (let [resp (call-service (campaign-url))]
-    (let [headers (:headers resp)]
-      (filter (fn [x]
-                (.startsWith (key x) "x_timing")) headers))))
+(defn get-timing-info
+  [response]
+  (let [headers (:headers response)]
+    (filter (fn [x]
+              (.startsWith (key x) "x_timing")) headers)))
 
 (defn -main
   "I don't do a whole lot ... yet."
