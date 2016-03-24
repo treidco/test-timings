@@ -33,7 +33,11 @@
   [response key]
   (get (json/read-str response) key))
 
-(defn is_enabled [channel-id] (parse-json (:body (call-service (channel-url channel-id))) "enabled"))
+(defn is_enabled
+  [channel-id]
+  (parse-json
+    (:body (call-service (channel-url channel-id)))
+    "enabled"))
 
 (defn get-timing-info
   [response]
