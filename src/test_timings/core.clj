@@ -25,23 +25,15 @@
   (http/get url
             {:headers {:authorization (str "Bearer " (:access_token config))}}))
 
-(defn call-channel
-  ([] (call-service (channel-url) ))
-  ([channel-id] (call-service (str (channel-url) "(" channel-id ")"))))
-
 (defn call-service
   ([url] (execute-service url))
   ([url id] (execute-service (str url "(" id ")"))))
-
-(defn call-campaign
-  ([] (call-service (campaign-url)))
-  ([campaign-id]))
 
 (defn parse-json
   [response key]
   (get (json/read-str response) key))
 
-(defn is_enabled [channel_id] (parse-json (:body (call-channel channel_id)) "enabled"))
+(defn is_enabled [channel-id] (parse-json (:body (call-service (channel-url channel-id))) "enabled"))
 
 (defn get-timing-info
   [response]
@@ -53,6 +45,4 @@
   "I don't do a whole lot ... yet."
   [& args]
   (println
-    (parse-json (:body (call-channel 75779)) "name")))
-
-
+    (parse-json (:body (call-service (channel-url 75779))) "name")))
